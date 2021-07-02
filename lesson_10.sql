@@ -81,8 +81,8 @@ db.catalogs.insertMany([{"name": "Процессоры"}, {"name": "Мат.пл�
 
 
 db.shop.insertMany([
-{"name": "GeForce RTX", "description": "Процессор", "price": "9000.00", "catalog_id": "Видеокарты", "created_at": new Date(), "updated_at": new Date()},
-{"name": "GeForce RTX", "description": "Процессор", "price": "9000.00", "catalog_id": "Видеокарты", "created_at": new Date(), "updated_at": new Date()}])
+{"name": "GeForce RTX", "description": "Характеристики видеокарты", "price": "9000.00", "catalog_id": "Видеокарты", "created_at": new Date(), "updated_at": new Date()},
+{"name": "AMD", "description": "Характеристики процессора", "price": "9000.00", "catalog_id": "Процессоры", "created_at": new Date(), "updated_at": new Date()}])
 
 
 
