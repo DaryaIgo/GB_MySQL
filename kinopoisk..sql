@@ -460,6 +460,55 @@ SELECT * FROM vw_genre_film; -- 4 фильма
  * 	Хранимые процедуры и триггеры
 */
 
+-- 1. Создала процедуру и транзакцию для добавления нового фильма
+
+DROP PROCEDURE IF EXISTS proc_add_new_film;
+
+DELIMITER //
+
+CREATE PROCEDURE proc_add_new_film (name_film VARCHAR(145),
+									year_release BIGINT(10),
+									duration_film BIGINT(10),
+									description TEXT,
+							  		OUT tran_result VARCHAR(200))
+BEGIN
+   DECLARE tran_rollback BOOL DEFAULT 0;
+   DECLARE code varchar(100);
+   DECLARE error_string varchar(100);
+   DECLARE last_user_id int;
+
+   DECLARE CONTINUE HANDLER FOR SQLEXCEPTION  -- обработка ошибок
+   BEGIN
+    	SET tran_rollback = 1; 
+		GET stacked DIAGNOSTICS CONDITION 1
+          	code = RETURNED_SQLSTATE, error_string = MESSAGE_TEXT;
+    	SET tran_result := CONCAT(code, ': ', error_string);
+   END;
+
+   START TRANSACTION;  -- запускаем транзакцию добавления нового фильма
+		INSERT INTO films (name_film, year_release, duration_film, description)
+		  VALUES (name_film, year_release, duration_film, description);
+	
+   IF tran_rollback THEN  -- если была получена ошибка откатываем изменения
+       ROLLBACK;
+   ELSE
+  	   SET tran_result := 'ok';  -- если фильм добавлен, выводим ок
+	   COMMIT;  -- успешно завершаем транзакцию
+   END IF;
+END //
+
+DELIMITER ;
+
+-- вызываем процедуру
+CALL proc_add_new_film ('Великий', 2020, 115, 'Громкое разоблачение экологического преступления в Японии', @tran_result);
+
+-- результат
+SELECT @tran_result;
+
+
+-- 2. Создала триггер, проверяющий дату рождения пользователя
+
+
 DROP TRIGGER IF EXISTS check_birth_user_before_insert;
 
 DELIMITER //
